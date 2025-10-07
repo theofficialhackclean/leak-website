@@ -1,8 +1,4 @@
-import { postgres } from '@vercel/postgres'
-
-const POSTGRES_URL = process.env.storage_POSTGRES_URL || process.env.POSTGRES_URL
-
-const sql = postgres(POSTGRES_URL!)
+import { sql } from '@vercel/postgres'
 
 export async function getItems() {
   await sql`
