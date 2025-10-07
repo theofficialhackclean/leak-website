@@ -15,6 +15,12 @@ export async function getItems() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `
+  // Add preview_image column if it doesn't exist (for migration)
+  try {
+    await sql`ALTER TABLE fortnite_items ADD COLUMN IF NOT EXISTS preview_image TEXT`
+  } catch (error) {
+    // Column might already exist, ignore error
+  }
   const { rows } = await sql`SELECT * FROM fortnite_items ORDER BY created_at DESC`
   return rows
 }
