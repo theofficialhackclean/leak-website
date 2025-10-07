@@ -264,6 +264,33 @@ export default function AdminPage() {
   const [editingItem, setEditingItem] = useState<FortniteItem | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState("")
+  const [uploading, setUploading] = useState(false)
+  const [imagePreview, setImagePreview] = useState<string>("")
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [editingItem, setEditingItem] = useState<FortniteItem | null>(null)
+
+  const [formData, setFormData] = useState({
+    name: "",
+    type: "skins" as ContentType,
+    rarity: "Epic" as Rarity,
+    status: "Leaked" as Status,
+    description: "",
+    releaseDate: "",
+  })
+
+  useEffect(() => {
+    if (editingItem) {
+      setFormData({
+        name: editingItem.name,
+        type: editingItem.type,
+        rarity: editingItem.rarity,
+        status: editingItem.status,
+        description: editingItem.description,
+        releaseDate: editingItem.releaseDate || "",
+      })
+      setImagePreview(editingItem.image)
+    }
+  }, [editingItem])
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -300,29 +327,6 @@ export default function AdminPage() {
       </div>
     )
   }
-
-  const [formData, setFormData] = useState({
-    name: "",
-    type: "skins" as ContentType,
-    rarity: "Epic" as Rarity,
-    status: "Leaked" as Status,
-    description: "",
-    releaseDate: "",
-  })
-
-  useEffect(() => {
-    if (editingItem) {
-      setFormData({
-        name: editingItem.name,
-        type: editingItem.type,
-        rarity: editingItem.rarity,
-        status: editingItem.status,
-        description: editingItem.description,
-        releaseDate: editingItem.releaseDate || "",
-      })
-      setImagePreview(editingItem.image)
-    }
-  }, [editingItem])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
