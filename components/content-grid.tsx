@@ -87,7 +87,7 @@ export function ContentGrid() {
             image,
             status: 'available'
           }
-        })
+        }).filter((item) => item.image) // Only include items with images
 
         setItemShop(mappedItems)
       } else {
