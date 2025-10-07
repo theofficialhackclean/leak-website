@@ -357,28 +357,14 @@ export default function AdminPage() {
       let imageUrl = editingItem?.image || ""
 
       if (selectedFile) {
-        if (formData.type === "emotes") {
-          console.log("[v0] Uploading emote video...")
-          const formDataUpload = new FormData()
-          formDataUpload.append("file", selectedFile)
-          const uploadResponse = await fetch("/api/upload", {
-            method: "POST",
-            body: formDataUpload,
-          })
-          if (!uploadResponse.ok) throw new Error("Upload failed")
-          const uploadData = await uploadResponse.json()
-          imageUrl = uploadData.url
-          console.log("[v0] Emote uploaded successfully")
-        } else {
-          console.log("[v0] Converting image to base64...")
-          imageUrl = await new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.onload = () => resolve(reader.result as string)
-            reader.onerror = () => reject(new Error("Failed to read file"))
-            reader.readAsDataURL(selectedFile)
-          })
-          console.log("[v0] Image converted successfully")
-        }
+        console.log("[v0] Converting image to base64...")
+        imageUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result as string)
+          reader.onerror = () => reject(new Error("Failed to read file"))
+          reader.readAsDataURL(selectedFile)
+        })
+        console.log("[v0] Image converted successfully")
       }
 
       console.log("[v0] Saving to database...")
