@@ -264,10 +264,6 @@ export default function AdminPage() {
   const [editingItem, setEditingItem] = useState<FortniteItem | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState("")
-  const [uploading, setUploading] = useState(false)
-  const [imagePreview, setImagePreview] = useState<string>("")
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [editingItem, setEditingItem] = useState<FortniteItem | null>(null)
 
   const [formData, setFormData] = useState({
     name: "",
