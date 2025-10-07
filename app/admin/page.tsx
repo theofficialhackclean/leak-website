@@ -262,6 +262,44 @@ export default function AdminPage() {
   const [imagePreview, setImagePreview] = useState<string>("")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [editingItem, setEditingItem] = useState<FortniteItem | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [password, setPassword] = useState("")
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (password === "admin") {
+      setIsAuthenticated(true)
+    } else {
+      toast({
+        title: "Error",
+        description: "Incorrect password",
+        variant: "destructive",
+      })
+    }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="p-6 w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-center">Admin Access</h1>
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full">Enter</Button>
+          </form>
+        </Card>
+      </div>
+    )
+  }
 
   const [formData, setFormData] = useState({
     name: "",
