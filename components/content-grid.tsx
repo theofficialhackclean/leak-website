@@ -68,7 +68,10 @@ export function ContentGrid() {
 
         const mappedItems = entries.map((entry: any) => {
           let name = entry.devName
-          let image = entry.newDisplayAssetPath || entry.displayAssetPath || ''
+          let image = entry.newDisplayAsset?.materialInstances[0]?.images?.Background ||
+                      entry.items[0]?.images?.icon ||
+                      entry.items[0]?.images?.featured ||
+                      ''
           let rarity = 'common'
 
           // Handle bundles
