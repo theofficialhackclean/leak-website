@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 
 
-type ContentType = "skins" | "emotes" | "wraps" | "maps"
+type ContentType = "skins" | "emotes" | "wraps" | "maps" | "shoes"
 type Rarity = "Common" | "Uncommon" | "Rare" | "Epic" | "Legendary" | "Mythic"
 type Status = "Leaked" | "Upcoming" | "Confirmed" | "Released"
 
@@ -254,6 +254,36 @@ const defaultMaps = [
     image: "/jason-zone.jpg",
     status: "Coming Soon",
     description: "Special zone where Jason boss will spawn",
+  },
+]
+
+const defaultShoes = [
+  {
+    id: "default-s1",
+    name: "Ghostface Boots",
+    rarity: "Epic",
+    type: "shoes",
+    image: "/ghostface-boots.jpg",
+    status: "Coming Oct 9",
+    description: "Scream-themed footwear for the Halloween event",
+  },
+  {
+    id: "default-s2",
+    name: "Demon Hunter Shoes",
+    rarity: "Rare",
+    type: "shoes",
+    image: "/demon-hunter-shoes.jpg",
+    status: "Available Now",
+    description: "KPop Demon Hunters themed shoes",
+  },
+  {
+    id: "default-s3",
+    name: "Horror Sneakers",
+    rarity: "Uncommon",
+    type: "shoes",
+    image: "/horror-sneakers.jpg",
+    status: "Leaked",
+    description: "Fortnitemares themed sneakers",
   },
 ]
 
@@ -649,6 +679,7 @@ export default function AdminPage() {
                   <SelectItem value="emotes">Emote</SelectItem>
                   <SelectItem value="wraps">Wrap</SelectItem>
                   <SelectItem value="maps">Map</SelectItem>
+                  <SelectItem value="shoes">Shoes</SelectItem>
                 </SelectContent>
               </Select>
             </div>

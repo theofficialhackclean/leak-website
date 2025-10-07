@@ -19,6 +19,7 @@ export function ContentGrid() {
   const [emotes, setEmotes] = useState<FortniteItem[]>([])
   const [wraps, setWraps] = useState<FortniteItem[]>([])
   const [maps, setMaps] = useState<FortniteItem[]>([])
+  const [shoes, setShoes] = useState<FortniteItem[]>([])
   const [itemShop, setItemShop] = useState<FortniteItem[]>([])
   const [loadingShop, setLoadingShop] = useState(true)
 
@@ -35,10 +36,12 @@ export function ContentGrid() {
           const userEmotes = userItems.filter((item: any) => item.type === "emotes")
           const userWraps = userItems.filter((item: any) => item.type === "wraps")
           const userMaps = userItems.filter((item: any) => item.type === "maps")
+          const userShoes = userItems.filter((item: any) => item.type === "shoes")
           setSkins(userSkins)
           setEmotes(userEmotes)
           setWraps(userWraps)
           setMaps(userMaps)
+          setShoes(userShoes)
         } else {
           console.error("Error loading items:", response.statusText)
           // No items in database, show empty arrays
@@ -124,7 +127,7 @@ export function ContentGrid() {
           </div>
         </div>
 
-        <TabsList className="mb-8 grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+        <TabsList className="mb-8 grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
           <TabsTrigger value="skins" data-value="skins">
             Skins
           </TabsTrigger>
@@ -136,6 +139,9 @@ export function ContentGrid() {
           </TabsTrigger>
           <TabsTrigger value="maps" data-value="maps">
             Maps
+          </TabsTrigger>
+          <TabsTrigger value="shoes" data-value="shoes">
+            Shoes
           </TabsTrigger>
           <TabsTrigger value="item-shop" data-value="item-shop">
             Item Shop
@@ -204,6 +210,23 @@ export function ContentGrid() {
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {maps.map((item) => (
+                <ContentCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="shoes" className="mt-0">
+          {shoes.length === 0 ? (
+            <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-dashed">
+              <div className="text-center">
+                <h3 className="mb-2 font-sans text-xl font-semibold">No shoes yet</h3>
+                <p className="text-muted-foreground">Upload items from the admin panel to get started</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {shoes.map((item) => (
                 <ContentCard key={item.id} item={item} />
               ))}
             </div>
