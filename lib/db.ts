@@ -1,6 +1,19 @@
 import { sql } from '@vercel/postgres'
 
 export async function getItems() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS fortnite_items (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      type TEXT NOT NULL,
+      rarity TEXT NOT NULL,
+      status TEXT NOT NULL,
+      description TEXT,
+      image TEXT NOT NULL,
+      release_date TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `
   const { rows } = await sql`SELECT * FROM fortnite_items ORDER BY created_at DESC`
   return rows
 }
