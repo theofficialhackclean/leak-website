@@ -62,44 +62,21 @@ export function ContentGrid() {
       const response = await fetch('/api/shop')
       if (response.ok) {
         const apiResponse = await response.json()
-        const featured = apiResponse.featured?.entries || apiResponse.data?.featured?.entries || []
-        const daily = apiResponse.daily?.entries || apiResponse.data?.daily?.entries || []
-        const entries = [...featured, ...daily]
+        const entries = apiResponse.data?.entries || []
 
         const mappedItems = entries.map((entry: any) => {
-          let name = entry.devName
+          let name = entry.items && entry.items.length > 0 ? entry.items[0].name : entry.devName
           let image = entry.newDisplayAsset?.materialInstances[0]?.images?.Background ||
-                      entry.items[0]?.images?.icon ||
-                      entry.items[0]?.images?.featured ||
+                      (entry.items && entry.items.length > 0 ? entry.items[0].images?.icon : '') ||
+                      (entry.items && entry.items.length > 0 ? entry.items[0].images?.featured : '') ||
                       ''
-          let rarity = 'common'
+          let rarity = entry.items && entry.items.length > 0 ? entry.items[0].rarity?.value : 'common'
 
           // Handle bundles
           if (entry.bundle) {
             name = entry.bundle.name
             image = entry.bundle.image
             rarity = 'legendary' // Bundles are usually high rarity
-          }
-          // Handle BR items
-          else if (entry.brItems && entry.brItems.length > 0) {
-            const firstItem = entry.brItems[0]
-            name = firstItem.name
-            image = firstItem.images.icon || firstItem.images.smallIcon
-            rarity = firstItem.rarity.value
-          }
-          // Handle tracks
-          else if (entry.tracks && entry.tracks.length > 0) {
-            const track = entry.tracks[0]
-            name = track.title
-            image = track.albumArt
-            rarity = 'uncommon' // Tracks are usually uncommon
-          }
-          // Handle cars
-          else if (entry.cars && entry.cars.length > 0) {
-            const car = entry.cars[0]
-            name = car.name
-            image = car.images.large || car.images.small
-            rarity = car.rarity.value
           }
 
           return {
