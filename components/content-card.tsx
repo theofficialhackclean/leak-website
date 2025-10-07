@@ -32,12 +32,16 @@ export function ContentCard({ item }: { item: ContentItem }) {
     <>
       <Card className="group overflow-hidden border-border/40 bg-card transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10">
         <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
-          <Image unoptimized
-            src={item.image || "/placeholder.svg"}
-            alt={item.name}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-110"
-          />
+          {item.type === "emotes" && item.image?.startsWith("data:video") ? (
+            <video
+              src={item.image}
+              className="w-full h-full object-cover"
+              controls
+              poster="/placeholder.svg"
+            />
+          ) : (
+            <Image unoptimized src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent opacity-60" />
           <div className="absolute right-3 top-3">
             <Badge variant="secondary" className="border-border/40 bg-card/80 backdrop-blur-sm">
@@ -88,7 +92,22 @@ export function ContentCard({ item }: { item: ContentItem }) {
           </DialogHeader>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary">
-              <Image unoptimized src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
+              {item.type === "emotes" && item.image?.startsWith("data:video") ? (
+                <video
+                  src={item.image}
+                  className="w-full h-full object-cover"
+                  controls
+                  poster="/placeholder.svg"
+                />
+              ) : (
+                <Image
+                  unoptimized
+                  src={item.image || "/placeholder.svg"}
+                  alt={item.name}
+                  fill
+                  className="object-cover"
+                />
+              )}
             </div>
             <div className="flex flex-col gap-4">
               <div>
