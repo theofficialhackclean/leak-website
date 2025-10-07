@@ -25,8 +25,8 @@ interface FortniteItem {
   status: Status
   description: string
   image: string
-  previewImage?: string
-  releaseDate?: string
+  preview_image?: string
+  release_date?: string
 }
 
 const defaultSkins = [
@@ -274,7 +274,7 @@ export default function AdminPage() {
     rarity: "Epic" as Rarity,
     status: "Leaked" as Status,
     description: "",
-    releaseDate: "",
+    release_date: "",
   })
 
   useEffect(() => {
@@ -285,10 +285,10 @@ export default function AdminPage() {
         rarity: editingItem.rarity,
         status: editingItem.status,
         description: editingItem.description,
-        releaseDate: editingItem.releaseDate || "",
+        release_date: editingItem.release_date || "",
       })
       setImagePreview(editingItem.image)
-      setPreviewImagePreview(editingItem.previewImage || "")
+    setPreviewImagePreview(editingItem.preview_image || "")
     }
   }, [editingItem])
 
@@ -372,7 +372,7 @@ export default function AdminPage() {
 
     try {
       let imageUrl = editingItem?.image || ""
-      let previewImageUrl = editingItem?.previewImage || ""
+      let previewImageUrl = editingItem?.preview_image || ""
 
       if (selectedFile) {
         console.log("[v0] Converting image to base64...")
@@ -402,8 +402,8 @@ export default function AdminPage() {
         const updatedItem = {
           ...formData,
           image: imageUrl,
-          previewImage: previewImageUrl,
-          releaseDate: formData.releaseDate,
+          preview_image: previewImageUrl,
+          release_date: formData.release_date,
         }
         console.log("[v0] Updating item:", updatedItem)
 
@@ -422,8 +422,8 @@ export default function AdminPage() {
         const newItem = {
           ...formData,
           image: imageUrl,
-          previewImage: previewImageUrl,
-          releaseDate: formData.releaseDate,
+          preview_image: previewImageUrl,
+          release_date: formData.release_date,
         }
         console.log("[v0] Creating new item:", newItem)
         const response = await fetch('/api/items', {
@@ -448,7 +448,7 @@ export default function AdminPage() {
         rarity: "Epic",
         status: "Leaked",
         description: "",
-        releaseDate: "",
+        release_date: "",
       })
       setSelectedFile(null)
       setSelectedPreviewFile(null)
@@ -476,7 +476,7 @@ export default function AdminPage() {
       rarity: "Epic",
       status: "Leaked",
       description: "",
-      releaseDate: "",
+      release_date: "",
     })
     setSelectedFile(null)
     setSelectedPreviewFile(null)
@@ -707,12 +707,12 @@ export default function AdminPage() {
 
             {/* Release Date */}
             <div className="space-y-2">
-              <Label htmlFor="releaseDate">Release Date (Optional)</Label>
+              <Label htmlFor="release_date">Release Date (Optional)</Label>
               <Input
-                id="releaseDate"
+                id="release_date"
                 type="date"
-                value={formData.releaseDate}
-                onChange={(e) => setFormData({ ...formData, releaseDate: e.target.value })}
+                value={formData.release_date}
+                onChange={(e) => setFormData({ ...formData, release_date: e.target.value })}
               />
             </div>
 
@@ -874,21 +874,11 @@ function ManageItems({ onEdit }: { onEdit: (item: FortniteItem) => void }) {
           <Card key={item.id} className="p-3 sm:p-4 bg-card border-border hover:border-primary/50 transition-colors">
             <div className="flex gap-3 sm:gap-4">
               <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-lg overflow-hidden">
-                {item.type === "emotes" ? (
-                  <video
-                    src={item.image || "/placeholder.svg"}
-                    className="w-full h-full object-cover"
-                    muted
-                    autoPlay
-                    loop
-                  />
-                ) : (
-                  <img
-                    src={item.image || "/placeholder.svg"}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  />
-                )}
+                <img
+                  src={(item.type === "emotes" ? item.preview_image : item.image) || "/placeholder.svg"}
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold truncate text-sm sm:text-base">{item.name}</h3>

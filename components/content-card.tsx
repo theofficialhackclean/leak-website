@@ -12,10 +12,10 @@ interface ContentItem {
   rarity: string
   type: string
   image: string
-  previewImage?: string
+  preview_image?: string
   status: string
   description?: string
-  releaseDate?: string
+  release_date?: string
 }
 
 export function ContentCard({ item }: { item: ContentItem }) {
@@ -34,7 +34,7 @@ export function ContentCard({ item }: { item: ContentItem }) {
       <Card className="group overflow-hidden border-border/40 bg-card transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10">
         <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
           {item.type === "emotes" ? (
-            <Image unoptimized src={item.previewImage || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
+            <Image unoptimized src={item.preview_image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
           ) : (
             <Image unoptimized src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
           )}
@@ -93,7 +93,7 @@ export function ContentCard({ item }: { item: ContentItem }) {
                   src={item.image}
                   className="w-full h-full object-cover"
                   controls
-                  poster={item.previewImage || "/placeholder.svg"}
+                  poster={item.preview_image || "/placeholder.svg"}
                 />
               ) : (
                 <Image
@@ -127,10 +127,10 @@ export function ContentCard({ item }: { item: ContentItem }) {
                   <p className="text-sm leading-relaxed">{item.description}</p>
                 </div>
               )}
-              {item.releaseDate && (
+              {item.release_date && (
                 <div>
                   <h3 className="mb-2 text-sm font-medium text-muted-foreground">Release Date</h3>
-                  <p className="font-semibold">{item.releaseDate}</p>
+                  <p className="font-semibold">{item.release_date}</p>
                 </div>
               )}
             </div>
