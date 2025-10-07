@@ -20,6 +20,7 @@ export function ContentGrid() {
   const [wraps, setWraps] = useState<FortniteItem[]>([])
   const [maps, setMaps] = useState<FortniteItem[]>([])
   const [itemShop, setItemShop] = useState<FortniteItem[]>([])
+  const [loadingShop, setLoadingShop] = useState(true)
 
   useEffect(() => {
     const loadItems = async () => {
@@ -58,11 +59,11 @@ export function ContentGrid() {
 
     const fetchItemShop = async () => {
       try {
-        const response = await fetch('https://fortnite-api.com/v2/shop')
+        const response = await fetch('/api/shop')
         if (response.ok) {
           const data = await response.json()
-          const featured = data.data.featured.entries || []
-          const daily = data.data.daily.entries || []
+          const featured = data.featured?.entries || data.data?.featured?.entries || []
+          const daily = data.daily?.entries || data.data?.daily?.entries || []
           const allItems = [...featured, ...daily]
           const mappedItems = allItems.map((item: any, index: number) => ({
             id: item.offerId || `shop-${index}`,
@@ -83,6 +84,8 @@ export function ContentGrid() {
       } catch (error) {
         console.error("Error fetching item shop:", error)
         setItemShop([])
+      } finally {
+        setLoadingShop(false)
       }
     }
 
@@ -195,11 +198,18 @@ export function ContentGrid() {
         </TabsContent>
 
         <TabsContent value="item-shop" className="mt-0">
-          {itemShop.length === 0 ? (
+          {loadingShop ? (
             <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-dashed">
               <div className="text-center">
                 <h3 className="mb-2 font-sans text-xl font-semibold">Loading item shop...</h3>
                 <p className="text-muted-foreground">Fetching current Fortnite item shop items</p>
+              </div>
+            </div>
+          ) : itemShop.length === 0 ? (
+            <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-dashed">
+              <div className="text-center">
+                <h3 className="mb-2 font-sans text-xl font-semibold">Failed to load item shop</h3>
+                <p className="text-muted-foreground">Unable to fetch items from the API</p>
               </div>
             </div>
           ) : (
