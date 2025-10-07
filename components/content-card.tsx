@@ -12,6 +12,7 @@ interface ContentItem {
   rarity: string
   type: string
   image: string
+  previewImage?: string
   status: string
   description?: string
   releaseDate?: string
@@ -32,13 +33,8 @@ export function ContentCard({ item }: { item: ContentItem }) {
     <>
       <Card className="group overflow-hidden border-border/40 bg-card transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10">
         <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
-          {item.type === "emotes" && item.image?.startsWith("data:video") ? (
-            <video
-              src={item.image}
-              className="w-full h-full object-cover"
-              controls
-              poster="/placeholder.svg"
-            />
+          {item.type === "emotes" ? (
+            <Image unoptimized src={item.previewImage || item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
           ) : (
             <Image unoptimized src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
           )}
@@ -97,7 +93,7 @@ export function ContentCard({ item }: { item: ContentItem }) {
                   src={item.image}
                   className="w-full h-full object-cover"
                   controls
-                  poster="/placeholder.svg"
+                  poster={item.previewImage || "/placeholder.svg"}
                 />
               ) : (
                 <Image

@@ -10,6 +10,7 @@ export async function getItems() {
       status TEXT NOT NULL,
       description TEXT,
       image TEXT NOT NULL,
+      preview_image TEXT,
       release_date TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
@@ -25,11 +26,12 @@ export async function addItem(item: {
   status: string
   description: string
   image: string
+  previewImage?: string
   releaseDate?: string
 }) {
   const { rows } = await sql`
-    INSERT INTO fortnite_items (name, type, rarity, status, description, image, release_date)
-    VALUES (${item.name}, ${item.type}, ${item.rarity}, ${item.status}, ${item.description}, ${item.image}, ${item.releaseDate || null})
+    INSERT INTO fortnite_items (name, type, rarity, status, description, image, preview_image, release_date)
+    VALUES (${item.name}, ${item.type}, ${item.rarity}, ${item.status}, ${item.description}, ${item.image}, ${item.previewImage || null}, ${item.releaseDate || null})
     RETURNING *
   `
   return rows[0]
@@ -42,11 +44,12 @@ export async function updateItem(id: number, item: {
   status: string
   description: string
   image: string
+  previewImage?: string
   releaseDate?: string
 }) {
   const { rows } = await sql`
     UPDATE fortnite_items
-    SET name = ${item.name}, type = ${item.type}, rarity = ${item.rarity}, status = ${item.status}, description = ${item.description}, image = ${item.image}, release_date = ${item.releaseDate || null}
+    SET name = ${item.name}, type = ${item.type}, rarity = ${item.rarity}, status = ${item.status}, description = ${item.description}, image = ${item.image}, preview_image = ${item.previewImage || null}, release_date = ${item.releaseDate || null}
     WHERE id = ${id}
     RETURNING *
   `

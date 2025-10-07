@@ -25,6 +25,7 @@ interface FortniteItem {
   status: Status
   description: string
   image: string
+  previewImage?: string
   releaseDate?: string
 }
 
@@ -261,6 +262,8 @@ export default function AdminPage() {
   const [uploading, setUploading] = useState(false)
   const [imagePreview, setImagePreview] = useState<string>("")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [previewImagePreview, setPreviewImagePreview] = useState<string>("")
+  const [selectedPreviewFile, setSelectedPreviewFile] = useState<File | null>(null)
   const [editingItem, setEditingItem] = useState<FortniteItem | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState("")
@@ -285,6 +288,7 @@ export default function AdminPage() {
         releaseDate: editingItem.releaseDate || "",
       })
       setImagePreview(editingItem.image)
+      setPreviewImagePreview(editingItem.previewImage || "")
     }
   }, [editingItem])
 
@@ -336,10 +340,23 @@ export default function AdminPage() {
     }
   }
 
+  const handlePreviewFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedPreviewFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreviewImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     console.log("[v0] Form submitted")
     console.log("[v0] Selected file:", selectedFile)
+    console.log("[v0] Selected preview file:", selectedPreviewFile)
     console.log("[v0] Editing item:", editingItem)
 
     if (!selectedFile && !editingItem) {
@@ -355,6 +372,7 @@ export default function AdminPage() {
 
     try {
       let imageUrl = editingItem?.image || ""
+      let previewImageUrl = editingItem?.previewImage || ""
 
       if (selectedFile) {
         console.log("[v0] Converting image to base64...")
@@ -367,12 +385,24 @@ export default function AdminPage() {
         console.log("[v0] Image converted successfully")
       }
 
+      if (selectedPreviewFile) {
+        console.log("[v0] Converting preview image to base64...")
+        previewImageUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result as string)
+          reader.onerror = () => reject(new Error("Failed to read preview file"))
+          reader.readAsDataURL(selectedPreviewFile)
+        })
+        console.log("[v0] Preview image converted successfully")
+      }
+
       console.log("[v0] Saving to database...")
 
       if (editingItem) {
         const updatedItem = {
           ...formData,
           image: imageUrl,
+          previewImage: previewImageUrl,
           releaseDate: formData.releaseDate,
         }
         console.log("[v0] Updating item:", updatedItem)
@@ -392,6 +422,7 @@ export default function AdminPage() {
         const newItem = {
           ...formData,
           image: imageUrl,
+          previewImage: previewImageUrl,
           releaseDate: formData.releaseDate,
         }
         console.log("[v0] Creating new item:", newItem)
@@ -420,7 +451,9 @@ export default function AdminPage() {
         releaseDate: "",
       })
       setSelectedFile(null)
+      setSelectedPreviewFile(null)
       setImagePreview("")
+      setPreviewImagePreview("")
       setEditingItem(null)
       console.log("[v0] Form reset complete")
     } catch (error) {
@@ -446,7 +479,9 @@ export default function AdminPage() {
       releaseDate: "",
     })
     setSelectedFile(null)
+    setSelectedPreviewFile(null)
     setImagePreview("")
+    setPreviewImagePreview("")
   }
 
   return (
@@ -526,6 +561,63 @@ export default function AdminPage() {
                       />
                     )}
                   </div>
+                )}
+
+                {formData.type === "emotes" && (
+                  <>
+                    {/* Preview Image Upload */}
+                    <div className="space-y-2">
+                      <Label htmlFor="previewImage">
+                        Preview Image {!editingItem && "*"}
+                      </Label>
+                      <div className="flex flex-col gap-4">
+                        <div className="relative border-2 border-dashed border-border rounded-lg p-8 hover:border-primary/50 transition-colors">
+                          <input
+                            id="previewImage"
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePreviewFileChange}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            required={!editingItem}
+                          />
+                          <div className="flex flex-col items-center justify-center gap-2 text-center">
+                            <svg
+                              className="w-8 h-8 text-muted-foreground"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                              />
+                            </svg>
+                            <p className="text-sm text-muted-foreground">
+                              {editingItem
+                                ? `Click to change preview image`
+                                : `Click or drag preview image to upload`
+                              }
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Accepting image files
+                            </p>
+                          </div>
+                        </div>
+
+                        {previewImagePreview && (
+                          <div className="relative w-full h-64 rounded-lg overflow-hidden">
+                            <img
+                              src={previewImagePreview || "/placeholder.svg"}
+                              alt="Preview Image"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
