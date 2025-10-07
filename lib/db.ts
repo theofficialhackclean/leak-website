@@ -1,5 +1,7 @@
 import { sql } from '@vercel/postgres'
 
+const POSTGRES_URL = process.env.storage_POSTGRES_URL || process.env.POSTGRES_URL
+
 export async function getItems() {
   await sql`
     CREATE TABLE IF NOT EXISTS fortnite_items (
