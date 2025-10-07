@@ -469,13 +469,15 @@ export default function AdminPage() {
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Image Upload */}
             <div className="space-y-2">
-              <Label htmlFor="image">Item Image {!editingItem && "*"}</Label>
+              <Label htmlFor="image">
+                {formData.type === "emotes" ? "Emote Video" : "Item Image"} {!editingItem && "*"}
+              </Label>
               <div className="flex flex-col gap-4">
                 <div className="relative border-2 border-dashed border-border rounded-lg p-8 hover:border-primary/50 transition-colors">
                   <input
                     id="image"
                     type="file"
-                    accept="image/*"
+                    accept={formData.type === "emotes" ? "video/*" : "image/*"}
                     onChange={handleFileChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     required={!editingItem}
@@ -495,18 +497,34 @@ export default function AdminPage() {
                       />
                     </svg>
                     <p className="text-sm text-muted-foreground">
-                      {editingItem ? "Click to change image" : "Click or drag image to upload"}
+                      {editingItem 
+                        ? `Click to change ${formData.type === "emotes" ? "video" : "image"}`
+                        : `Click or drag ${formData.type === "emotes" ? "video" : "image"} to upload`
+                      }
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formData.type === "emotes" ? "Accepting video files" : "Accepting image files"}
                     </p>
                   </div>
                 </div>
 
                 {imagePreview && (
                   <div className="relative w-full h-64 rounded-lg overflow-hidden">
-                    <img
-                      src={imagePreview || "/placeholder.svg"}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                    />
+                    {formData.type === "emotes" ? (
+                      <video
+                        src={imagePreview}
+                        controls
+                        className="w-full h-full object-cover"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <img
+                        src={imagePreview || "/placeholder.svg"}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                 )}
               </div>
@@ -763,11 +781,23 @@ function ManageItems({ onEdit }: { onEdit: (item: FortniteItem) => void }) {
         {items.map((item) => (
           <Card key={item.id} className="p-3 sm:p-4 bg-card border-border hover:border-primary/50 transition-colors">
             <div className="flex gap-3 sm:gap-4">
-              <img
-                src={item.image || "/placeholder.svg"}
-                alt={item.name}
-                className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
-              />
+              <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                {item.type === "emotes" ? (
+                  <video
+                    src={item.image || "/placeholder.svg"}
+                    className="w-full h-full object-cover"
+                    muted
+                    autoPlay
+                    loop
+                  />
+                ) : (
+                  <img
+                    src={item.image || "/placeholder.svg"}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold truncate text-sm sm:text-base">{item.name}</h3>
                 <p className="text-xs sm:text-sm text-muted-foreground">
