@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const response = await fetch('https://fortnite-api.com/v1/shop', {
+    const response = await fetch('https://fortnite-api.com/v2/shop', {
       headers: {
         'User-Agent': 'Fortnite-Leaks-App/1.0'
       }
