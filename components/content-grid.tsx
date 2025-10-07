@@ -57,37 +57,70 @@ export function ContentGrid() {
       }
     }
 
-    const fetchItemShop = async () => {
-      try {
-        const response = await fetch('/api/shop')
-        if (response.ok) {
-          const data = await response.json()
-          const featured = data.featured?.entries || data.data?.featured?.entries || []
-          const daily = data.daily?.entries || data.data?.daily?.entries || []
-          const allItems = [...featured, ...daily]
-          const mappedItems = allItems.map((item: any, index: number) => ({
-            id: item.offerId || `shop-${index}`,
-            name: item.devName || item.displayName || 'Unknown Item',
-            rarity: item.items[0]?.rarity?.value || 'common',
-            type: 'shop',
-            image: item.newDisplayAsset?.materialInstances[0]?.images?.Background ||
-                   item.items[0]?.images?.icon ||
-                   item.items[0]?.images?.featured ||
-                   '',
-            status: 'Released'
-          }))
-          setItemShop(mappedItems)
-        } else {
-          console.error("Error fetching item shop:", response.statusText)
-          setItemShop([])
-        }
-      } catch (error) {
-        console.error("Error fetching item shop:", error)
+  const fetchItemShop = async () => {
+    try {
+      const response = await fetch('/api/shop')
+      if (response.ok) {
+        const apiResponse = await response.json()
+        const featured = apiResponse.featured?.entries || apiResponse.data?.featured?.entries || []
+        const daily = apiResponse.daily?.entries || apiResponse.data?.daily?.entries || []
+        const entries = [...featured, ...daily]
+
+        const mappedItems = entries.map((entry: any) => {
+          let name = entry.devName
+          let image = entry.newDisplayAssetPath || entry.displayAssetPath || ''
+          let rarity = 'common'
+
+          // Handle bundles
+          if (entry.bundle) {
+            name = entry.bundle.name
+            image = entry.bundle.image
+            rarity = 'legendary' // Bundles are usually high rarity
+          }
+          // Handle BR items
+          else if (entry.brItems && entry.brItems.length > 0) {
+            const firstItem = entry.brItems[0]
+            name = firstItem.name
+            image = firstItem.images.icon || firstItem.images.smallIcon
+            rarity = firstItem.rarity.value
+          }
+          // Handle tracks
+          else if (entry.tracks && entry.tracks.length > 0) {
+            const track = entry.tracks[0]
+            name = track.title
+            image = track.albumArt
+            rarity = 'uncommon' // Tracks are usually uncommon
+          }
+          // Handle cars
+          else if (entry.cars && entry.cars.length > 0) {
+            const car = entry.cars[0]
+            name = car.name
+            image = car.images.large || car.images.small
+            rarity = car.rarity.value
+          }
+
+          return {
+            id: entry.offerId,
+            name,
+            rarity,
+            type: 'item-shop',
+            image,
+            status: 'available'
+          }
+        })
+
+        setItemShop(mappedItems)
+      } else {
+        console.error("Error fetching item shop:", response.statusText)
         setItemShop([])
-      } finally {
-        setLoadingShop(false)
       }
+    } catch (error) {
+      console.error("Error fetching item shop:", error)
+      setItemShop([])
+    } finally {
+      setLoadingShop(false)
     }
+  }
 
     loadItems()
     fetchItemShop()
