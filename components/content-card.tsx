@@ -93,6 +93,8 @@ export function ContentCard({ item }: { item: ContentItem }) {
                   src={item.image}
                   className="w-full h-full object-cover"
                   controls
+                  autoPlay
+                  loop
                   poster={item.preview_image || "/placeholder.svg"}
                 />
               ) : (
