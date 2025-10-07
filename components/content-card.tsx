@@ -32,7 +32,7 @@ export function ContentCard({ item }: { item: ContentItem }) {
     <>
       <Card className="group overflow-hidden border-border/40 bg-card transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10">
         <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
-          <Image
+          <Image unoptimized
             src={item.image || "/placeholder.svg"}
             alt={item.name}
             fill
@@ -88,7 +88,7 @@ export function ContentCard({ item }: { item: ContentItem }) {
           </DialogHeader>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary">
-              <Image src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
+              <Image unoptimized src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
             </div>
             <div className="flex flex-col gap-4">
               <div>
