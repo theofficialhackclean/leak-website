@@ -34,7 +34,7 @@ export function ContentCard({ item }: { item: ContentItem }) {
       <Card className="group overflow-hidden border-border/40 bg-card transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10">
         <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
           {item.type === "emotes" ? (
-            <Image unoptimized src={item.previewImage || item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
+            <Image unoptimized src={item.previewImage || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
           ) : (
             <Image unoptimized src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
           )}
