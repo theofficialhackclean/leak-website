@@ -19,6 +19,7 @@ export function ContentGrid() {
   const [emotes, setEmotes] = useState<FortniteItem[]>([])
   const [wraps, setWraps] = useState<FortniteItem[]>([])
   const [maps, setMaps] = useState<FortniteItem[]>([])
+  const [itemShop, setItemShop] = useState<FortniteItem[]>([])
 
   useEffect(() => {
     const loadItems = async () => {
@@ -33,7 +34,6 @@ export function ContentGrid() {
           const userEmotes = userItems.filter((item: any) => item.type === "emotes")
           const userWraps = userItems.filter((item: any) => item.type === "wraps")
           const userMaps = userItems.filter((item: any) => item.type === "maps")
-
           setSkins(userSkins)
           setEmotes(userEmotes)
           setWraps(userWraps)
@@ -56,7 +56,38 @@ export function ContentGrid() {
       }
     }
 
+    const fetchItemShop = async () => {
+      try {
+        const response = await fetch('https://fortnite-api.com/v2/shop')
+        if (response.ok) {
+          const data = await response.json()
+          const featured = data.data.featured.entries || []
+          const daily = data.data.daily.entries || []
+          const allItems = [...featured, ...daily]
+          const mappedItems = allItems.map((item: any, index: number) => ({
+            id: item.offerId || `shop-${index}`,
+            name: item.devName || item.displayName || 'Unknown Item',
+            rarity: item.items[0]?.rarity?.value || 'common',
+            type: 'shop',
+            image: item.newDisplayAsset?.materialInstances[0]?.images?.Background ||
+                   item.items[0]?.images?.icon ||
+                   item.items[0]?.images?.featured ||
+                   '',
+            status: 'Released'
+          }))
+          setItemShop(mappedItems)
+        } else {
+          console.error("Error fetching item shop:", response.statusText)
+          setItemShop([])
+        }
+      } catch (error) {
+        console.error("Error fetching item shop:", error)
+        setItemShop([])
+      }
+    }
+
     loadItems()
+    fetchItemShop()
 
     // Listen for custom event
     const handleUpdate = () => loadItems()
@@ -77,7 +108,7 @@ export function ContentGrid() {
           </div>
         </div>
 
-        <TabsList className="mb-8 grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+        <TabsList className="mb-8 grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
           <TabsTrigger value="skins" data-value="skins">
             Skins
           </TabsTrigger>
@@ -89,6 +120,9 @@ export function ContentGrid() {
           </TabsTrigger>
           <TabsTrigger value="maps" data-value="maps">
             Maps
+          </TabsTrigger>
+          <TabsTrigger value="item-shop" data-value="item-shop">
+            Item Shop
           </TabsTrigger>
         </TabsList>
 
@@ -154,6 +188,23 @@ export function ContentGrid() {
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {maps.map((item) => (
+                <ContentCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="item-shop" className="mt-0">
+          {itemShop.length === 0 ? (
+            <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-dashed">
+              <div className="text-center">
+                <h3 className="mb-2 font-sans text-xl font-semibold">Loading item shop...</h3>
+                <p className="text-muted-foreground">Fetching current Fortnite item shop items</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {itemShop.map((item) => (
                 <ContentCard key={item.id} item={item} />
               ))}
             </div>

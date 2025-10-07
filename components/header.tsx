@@ -93,6 +93,13 @@ export function Header() {
           >
             Maps
           </a>
+          <a
+            href="#item-shop"
+            onClick={(e) => handleNavClick(e, "item-shop")}
+            className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+          >
+            Item Shop
+          </a>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -206,6 +213,13 @@ export function Header() {
               className="rounded-lg px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
             >
               Maps
+            </a>
+            <a
+              href="#item-shop"
+              onClick={(e) => handleNavClick(e, "item-shop")}
+              className="rounded-lg px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              Item Shop
             </a>
           </nav>
         </div>
